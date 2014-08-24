@@ -1,8 +1,14 @@
 package com.equiplexdevelopers.budgetdroid;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import android.app.Activity;
+import android.app.Application;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -18,10 +24,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Main extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -30,6 +40,8 @@ public class Main extends ActionBarActivity implements
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
 	 */
+ 
+	
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 
 	/**
@@ -37,7 +49,7 @@ public class Main extends ActionBarActivity implements
 	 * {@link #restoreActionBar()}.
 	 */
 	public static CharSequence mTitle;
-
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,6 +62,7 @@ public class Main extends ActionBarActivity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+		
 	}
     
 	
@@ -165,17 +178,40 @@ public class Main extends ActionBarActivity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			String Dashboard = "Dashboard";
+			
 			View rootView = null;
 			
-			if(mTitle == Dashboard){
 			rootView = inflater.inflate(R.layout.fragment_main, container,
-			false);
-			}
-		    Log.v("Title", (String) mTitle);
-		    
-		    rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);		
+        
+			SimpleDateFormat sdf = new SimpleDateFormat("MMMM,yyyy");
+			
+			String month = sdf.format(new Date());
+			
+			TextView TMonth = (TextView) rootView.findViewById(R.id.month);
+			
+			TMonth.append(month);
+			
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				
+				int dmonth = cal.get(Calendar.MONTH);
+				int dyear =  cal.get(Calendar.YEAR);
+				
+				DatabaseHandler db = new DatabaseHandler(getActivity());
+				
+				int income = db.getincomepermonth(dmonth, dyear);
+				int expense = db.getexpensepermonth(dmonth, dyear);
+				
+				TextView Income = (TextView) rootView.findViewById(R.id.mincome);
+				TextView Expense = (TextView) rootView.findViewById(R.id.mexpense);
+				TextView Savings = (TextView) rootView.findViewById(R.id.msavings);
+				
+				Income.setText("Amount :"+income);
+				Expense.setText("Amount :"+expense);
+				Savings.setText("Amount :"+(income-expense));
+	
+			
 			return rootView;
 			
 		}
@@ -197,6 +233,10 @@ public class Main extends ActionBarActivity implements
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
+		private EditText Amount;
+		private EditText Tdate;
+		private EditText Type;
+		
 		public static TransactionsFragment newInstance(int sectionNumber) {
 			TransactionsFragment fragment = new TransactionsFragment();
 			Bundle args = new Bundle();
@@ -204,7 +244,8 @@ public class Main extends ActionBarActivity implements
 			fragment.setArguments(args);
 			return fragment;
 		}
-
+		
+		
 		public TransactionsFragment() {
 		}
 
@@ -213,7 +254,53 @@ public class Main extends ActionBarActivity implements
 				Bundle savedInstanceState) {
 			View rootView = null;
 			rootView = inflater.inflate(R.layout.fragment_transaction, container,
-					false);		
+					false);
+			
+			
+			SimpleDateFormat format =  new SimpleDateFormat ("dd-MM-yyyy");
+			
+			String dte = format.format(new Date());
+			
+			Tdate= (EditText) rootView.findViewById(R.id.transactiondate);
+			
+			Tdate.setText(dte);
+			
+			Button save = (Button) rootView.findViewById(R.id.savetransaction);
+			
+			save.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					Amount= (EditText) getView().findViewById(R.id.amount);    
+					Tdate= (EditText) getView().findViewById(R.id.transactiondate);
+					Type= (EditText) getView().findViewById(R.id.type);
+		            		
+					String amount = Amount.getText().toString();
+					String tdate = Tdate.getText().toString();
+					
+					SimpleDateFormat format =  new SimpleDateFormat ("dd-MM-yyyy");
+					Date datet = null;
+					try {
+						datet = format.parse(tdate);
+						String type = Type.getText().toString();
+						DatabaseHandler db = new DatabaseHandler(getActivity());
+					    db.addTransaction(type , datet ,Integer.parseInt(amount));
+						Toast.makeText(getActivity(), "transaction saved", Toast.LENGTH_SHORT).show();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+			
+					
+					
+					
+				}
+			});
+			
+			
+			
 			return rootView;
 			
 		}

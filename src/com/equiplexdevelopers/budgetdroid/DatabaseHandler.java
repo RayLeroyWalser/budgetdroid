@@ -35,7 +35,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
-		String CREATE_BUDGET_TABLE ="CREATE TABLE "+TABLE_BUDGET +"("+KEY_DATE +"DATE ,"+KEY_AMOUNT+" NUMBER,"+KEY_TYPE+" TEXT"
+		String CREATE_BUDGET_TABLE ="CREATE TABLE "+TABLE_BUDGET +"("+KEY_DATE +"DATETIME DEFAULT CURRENT_TIMESTAMP ,"+KEY_AMOUNT+" NUMBER,"+KEY_TYPE+" TEXT"
 				+")";
 		db.execSQL(CREATE_BUDGET_TABLE);
 		String CREATE_TARGET_TABLE ="CREATE TABLE "+TABLE_TARGET +"("+KEY_MONTHLY +"TEXT ,"+KEY_ANNUALY+" TEXT "
@@ -55,27 +55,41 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 	}
 	
-	public void addTransaction(String type , String date , String Amount){
+	public void addTransaction(String type , java.util.Date datet , int Amount){
 		SQLiteDatabase db = this.getWritableDatabase();
 		
 		ContentValues values = new ContentValues();
-		values.put(KEY_DATE, date);
-		values.put(KEY_TYPE, type);
+	    values.put(KEY_TYPE, type);
 		values.put(KEY_AMOUNT, Amount);
 		db.insert(TABLE_BUDGET, null, values);
 		db.close();
 				
 	}
 	
-	public String getincomepermonth(int month,int Year){
+	public int getincomepermonth(int month,int Year){
 		SQLiteDatabase db = this.getReadableDatabase();
 		
-		String incomeQuery = "SELECT sum(amount) as income from "+TABLE_BUDGET+"WHERE YEAR(date) = '"+Year+"'and type ='"+"income"+"'and MONTH(date) ='"+month+"'";
+		String incomeQuery = "SELECT sum(amount) as income from "+TABLE_BUDGET+" where type = 'income'";
 		
 		Cursor cursor = db.rawQuery(incomeQuery, null);
 		
-		cursor.close();
-		return cursor.toString();
+		if(cursor.moveToFirst()){
+		return cursor.getInt(0);
+		}
+		return (Integer) null;
+			
+	}
+	public int getexpensepermonth(int month,int Year){
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		String incomeQuery = "SELECT sum(amount) as expense from "+TABLE_BUDGET+" where type = 'expense'";
+		
+		Cursor cursor = db.rawQuery(incomeQuery, null);
+		
+		if(cursor.moveToFirst()){
+		return cursor.getInt(0);
+		}
+		return (Integer) null;
 			
 	}
 
