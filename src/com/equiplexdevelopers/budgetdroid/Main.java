@@ -30,6 +30,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -199,18 +200,28 @@ public class Main extends ActionBarActivity implements
 				int dyear =  cal.get(Calendar.YEAR);
 				
 				DatabaseHandler db = new DatabaseHandler(getActivity());
-				
-				int income = db.getincomepermonth(dmonth, dyear);
-				int expense = db.getexpensepermonth(dmonth, dyear);
+				try{
+				int income = db.getincomepermonth();
+				int expense = db.getexpensepermonth();
+				int avgincome = db.getavgincome();
+				int avgexpense = db.getavgexpenses();
 				
 				TextView Income = (TextView) rootView.findViewById(R.id.mincome);
 				TextView Expense = (TextView) rootView.findViewById(R.id.mexpense);
 				TextView Savings = (TextView) rootView.findViewById(R.id.msavings);
+				TextView Aincome = (TextView) rootView.findViewById(R.id.aincome);
+				TextView Aexpense = (TextView) rootView.findViewById(R.id.aexpenses);
 				
-				Income.setText("Amount :"+income);
-				Expense.setText("Amount :"+expense);
-				Savings.setText("Amount :"+(income-expense));
-	
+				Income.setText( "Income   :"+income);
+				Expense.setText("Expenses :"+expense);
+				Savings.setText("Savings  :"+(income-expense));
+				Aincome.setText("Avg Income :"+avgincome);
+				Aexpense.setText("Avg Expenses :"+avgexpense);
+				
+		}
+		catch(Exception e){
+			Toast.makeText(getActivity(), Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+		}
 			
 			return rootView;
 			
@@ -261,7 +272,7 @@ public class Main extends ActionBarActivity implements
 			
 			String dte = format.format(new Date());
 			
-			Tdate= (EditText) rootView.findViewById(R.id.transactiondate);
+			Tdate= (EditText) rootView.findViewById(R.id.atarget);
 			
 			Tdate.setText(dte);
 			
@@ -273,17 +284,17 @@ public class Main extends ActionBarActivity implements
 				public void onClick(View v) {
 					
 					Amount= (EditText) getView().findViewById(R.id.amount);    
-					Tdate= (EditText) getView().findViewById(R.id.transactiondate);
+					Tdate= (EditText) getView().findViewById(R.id.atarget);
 					Type= (EditText) getView().findViewById(R.id.type);
 		            		
-					String amount = Amount.getText().toString();
-					String tdate = Tdate.getText().toString();
+					String amount = Amount.getText().toString().trim();
+					String tdate = Tdate.getText().toString().trim();
 					
 					SimpleDateFormat format =  new SimpleDateFormat ("dd-MM-yyyy");
 					Date datet = null;
 					try {
 						datet = format.parse(tdate);
-						String type = Type.getText().toString();
+						String type = Type.getText().toString().trim();
 						DatabaseHandler db = new DatabaseHandler(getActivity());
 					    db.addTransaction(type , datet ,Integer.parseInt(amount));
 						Toast.makeText(getActivity(), "transaction saved", Toast.LENGTH_SHORT).show();
@@ -318,6 +329,8 @@ public class Main extends ActionBarActivity implements
 		 * fragment.
 		 */
 		private static final String ARG_SECTION_NUMBER = "section_number";
+		private ProgressBar Annualy;
+		private ProgressBar Monthly;
 
 		/**
 		 * Returns a new instance of this fragment for the given section number.
@@ -337,11 +350,30 @@ public class Main extends ActionBarActivity implements
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			View rootView = null;
-			
-		    Log.v("Title", (String) mTitle);
-		    
-		    rootView = inflater.inflate(R.layout.fragment_targets, container,
+			rootView = inflater.inflate(R.layout.fragment_targets, container,
 					false);		
+			
+			Monthly = (ProgressBar) rootView.findViewById(R.id.monthly);
+			Annualy = (ProgressBar) rootView.findViewById(R.id.annualy);
+			
+			DatabaseHandler db = new DatabaseHandler(getActivity());
+			try{
+				Monthly.setMax(db.monthlytarget());
+			    Annualy.setMax(db.annualtarget());
+				Monthly.setProgress(db.getincomepermonth()-db.getexpensepermonth());
+				Monthly.setProgress(db.getannualincome()-db.getannualexpense());
+				
+			 
+			}
+			catch(Exception e){
+				Toast.makeText(getActivity(), Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+			}
+			/*
+		*/    
+		    
+			
+			
+			
 			return rootView;
 			
 		}
@@ -381,7 +413,41 @@ public class Main extends ActionBarActivity implements
 			View rootView = null;
 			
 		    rootView = inflater.inflate(R.layout.fragment_settings, container,
-					false);		
+					false);
+			DatabaseHandler db = new DatabaseHandler(getActivity());
+			EditText	Monthly= (EditText) rootView.findViewById(R.id.mtarget);    
+			EditText	Annualy= (EditText) rootView.findViewById(R.id.atarget);
+			
+			try{
+				Monthly.setHint("Ksh:"+db.monthlytarget());
+				Annualy.setHint("Ksh:"+db.annualtarget());
+			}
+			catch(Exception e){}
+			
+            Button save = (Button) rootView.findViewById(R.id.savetargets);
+			
+			save.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+				EditText	Monthly= (EditText) getView().findViewById(R.id.mtarget);    
+				EditText	Annualy= (EditText) getView().findViewById(R.id.atarget);
+							
+					String monthly = Monthly.getText().toString().trim();
+					String annualy = Annualy.getText().toString().trim();
+					
+					try{
+						DatabaseHandler db = new DatabaseHandler(getActivity());
+					db.addTarget(Integer.parseInt(monthly),Integer.parseInt(annualy));
+					Toast.makeText(getActivity(), "new target added", Toast.LENGTH_SHORT).show();
+					}
+					catch(Exception e){
+						Toast.makeText(getActivity(), Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+						
+					}
+				}
+			});
 			return rootView;
 			
 		}

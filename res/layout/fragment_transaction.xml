@@ -41,7 +41,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
-        android:id="@+id/transactiondate"
+        android:id="@+id/atarget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/mincome"
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView2"
         android:layout_alignBottom="@+id/textView2"
-        android:layout_alignLeft="@+id/transactiondate"
+        android:layout_alignLeft="@+id/atarget"
         android:background="@color/white"
         android:ems="10" />
 

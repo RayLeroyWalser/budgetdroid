@@ -28,7 +28,7 @@
         android:textColor="@color/white" />
 
     <ProgressBar
-        android:id="@+id/progressBar1"
+        android:id="@+id/monthly"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,8 +37,7 @@
         android:layout_below="@+id/textView1"
         android:layout_marginTop="15dp"
         android:background="@color/gray"
-        android:max="100"
-        android:progress="60" />
+       />
 
     <TextView
         android:id="@+id/textView2"
@@ -46,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
         android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/progressBar1"
+        android:layout_below="@+id/monthly"
         android:layout_marginTop="22dp"
         android:background="@color/green"
         android:text="Annual Targets"
@@ -54,17 +53,15 @@
         android:textColor="@color/white" />
 
     <ProgressBar
-        android:id="@+id/progressBar2"
+        android:id="@+id/annualy"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView2"
-        android:layout_alignRight="@+id/progressBar1"
+        android:layout_alignRight="@+id/monthly"
         android:layout_below="@+id/textView2"
         android:layout_marginTop="16dp"
         android:background="@color/gray"
-        android:max="100"
-        android:progress="60" 
         />
 
 </RelativeLayout>

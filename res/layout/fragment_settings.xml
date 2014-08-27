@@ -29,7 +29,7 @@
         android:textColor="@color/white" />
 
     <EditText
-        android:id="@+id/EditText01"
+        android:id="@+id/mtarget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView2"
@@ -46,9 +46,9 @@
         android:id="@+id/mincome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/EditText01"
-        android:layout_below="@+id/EditText01"
-        android:text="Annualy"
+        android:layout_alignLeft="@+id/mtarget"
+        android:layout_below="@+id/mtarget"
+        android:text="Annual Target"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -58,15 +58,15 @@
         android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="20dp"
-        android:text="Monthly"
+        android:text="Monthly Target"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
-        android:id="@+id/transactiondate"
+        android:id="@+id/atarget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/EditText01"
+        android:layout_alignRight="@+id/mtarget"
         android:layout_below="@+id/mincome"
         android:layout_marginTop="16dp"
         android:background="@color/white"
@@ -74,12 +74,12 @@
         android:inputType="number" />
 
     <Button
-        android:id="@+id/savetransaction"
+        android:id="@+id/savetargets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/transactiondate"
-        android:layout_alignRight="@+id/transactiondate"
-        android:layout_below="@+id/transactiondate"
+        android:layout_alignLeft="@+id/atarget"
+        android:layout_alignRight="@+id/atarget"
+        android:layout_below="@+id/atarget"
         android:layout_marginTop="27dp"
         android:background="@color/green"
         android:text="Save"
