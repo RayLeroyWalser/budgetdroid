@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -278,6 +279,9 @@ public class NavigationDrawerFragment extends Fragment {
 				
 			System.exit(0);
 		}
+		
+	
+		
 
 		return super.onOptionsItemSelected(item);
 	}
