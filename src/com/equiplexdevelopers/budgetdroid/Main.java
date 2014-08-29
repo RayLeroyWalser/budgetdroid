@@ -147,11 +147,24 @@ public class Main extends ActionBarActivity implements
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			
-			Toast.makeText(this, "Action not yet implemented ", Toast.LENGTH_SHORT).show();
+			try
+			{
+				Toast.makeText(this, Reminder(), Toast.LENGTH_SHORT).show();
+			}
+			catch(Exception e){
+				Toast.makeText(this, Log.getStackTraceString(e), Toast.LENGTH_SHORT).show();
+			}
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	/**native function to trigger reminder**/
+	
+	public native String Reminder();
+	
+	static {
+		System.loadLibrary("BudgetDroid");
 	}
 
 	/**
